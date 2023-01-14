@@ -1,0 +1,40 @@
+name: Backport Pull
+on:
+  push:
+    branches:
+      - variant-3
+
+jobs:
+  create-pull-request:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+    - name: Check for Existing Pull Request
+      id: check-pull-request
+      run: |
+        set -e
+        pr_exists=$(hub pr list -h variant-3:variant-3 -h variant-3-to-variant-2:variant-3-to-variant-2  | grep -c "variant-2" )
+        echo "::set-output name=pr_exists::$pr_exists"
+    - name: Check for Existing Transition Branch
+      id: check-transition-branch
+      run: |
+        set -e
+        branch_exists=$(git ls-remote --heads origin variant-3-to-variant-2 | wc -l)
+        echo "::set-output name=branch_exists::$branch_exists"
+    - name: Delete Transition Branch
+      if: steps.check-pull-request.outputs.pr_exists == '0' and steps.check-transition-branch.outputs.branch_exists == '1'
+      run: |
+        set -e
+        git push origin --delete variant-3-to-variant-2
+    - name: Create Transition Branch
+      if: steps.check-pull-request.outputs.pr_exists == '0' and steps.check-transition-branch.outputs.branch_exists == '0'
+      run: |
+        set -e
+        git checkout -b variant-3-to-variant-2
+        git push -u origin variant-3-to-variant-2
+    - name: Create New Pull Request
+      if: steps.check-pull-request.outputs.pr_exists == '0' and steps.check-transition-branch.outputs.branch_exists == '0'
+      run: |
+        set -e
+        hub pull-request -h variant-3-to-variant-2:variant-3-to-variant-2 -b variant-2 -m "Sync with variant-3"
