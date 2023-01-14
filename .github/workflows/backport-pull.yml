@@ -14,7 +14,7 @@ jobs:
     - name: Check for Existing Pull Request
       id: check-pull-request
       run: |
-        set -e
+        # set -e
         pr_exists=$(hub pr list -h variant-3:variant-3 -h variant-3-to-variant-2:variant-3-to-variant-2  | grep -c "variant-2" )
         echo "::set-output name=pr_exists::$pr_exists"
     - name: Check for Existing Transition Branch
