@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - variant-3
+  workflow_dispatch:
 
 jobs:
   create-pull-request:
