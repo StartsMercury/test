@@ -12,16 +12,16 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
     - name: Setup hub
-    run: |
-      set -e
-      if [ "${{ matrix.os }}" == "windows-latest" ]; then
-        $url = "https://github.com/github/hub/releases/download/v2.14.2/hub-windows-amd64-2.14.2.zip"
-        (New-Object System.Net.WebClient).DownloadFile($url, $env:TEMP + "\hub.zip")
-        Expand-Archive -Path $env:TEMP + "\hub.zip" -DestinationPath $env:TEMP
-        $env:PATH += ";$env:TEMP\hub-windows-amd64-2.14.2"
-      else
-        echo "::add-path::$HOME/bin"
-        curl --silent --location "https://github.com/github/hub/releases/download/v2.14.2/hub-linux-amd64-2.14.2.tgz" | tar xz -C $HOME/bin --strip-components=2 hub-linux-amd64-2.14.2/bin/hub
+      run: |
+        set -e
+        if [ "${{ matrix.os }}" == "windows-latest" ]; then
+          $url = "https://github.com/github/hub/releases/download/v2.14.2/hub-windows-amd64-2.14.2.zip"
+          (New-Object System.Net.WebClient).DownloadFile($url, $env:TEMP + "\hub.zip")
+          Expand-Archive -Path $env:TEMP + "\hub.zip" -DestinationPath $env:TEMP
+          $env:PATH += ";$env:TEMP\hub-windows-amd64-2.14.2"
+        else
+          echo "::add-path::$HOME/bin"
+          curl --silent --location "https://github.com/github/hub/releases/download/v2.14.2/hub-linux-amd64-2.14.2.tgz" | tar xz -C $HOME/bin --strip-components=2 hub-linux-amd64-2.14.2/bin/hub
     - name: Check for Existing Pull Request
       id: check-pull-request
       run: |
