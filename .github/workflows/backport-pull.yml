@@ -1,3 +1,4 @@
+
 name: Backport Pull
 on:
   push:
@@ -16,7 +17,7 @@ jobs:
         set -e
         if [ "${{ matrix.os }}" == "windows-latest" ]; then
           $url = "https://github.com/github/hub/releases/download/v2.14.2/hub-windows-amd64-2.14.2.zip"
-          (New-Object System.Net.WebClient).DownloadFile($url, $env:TEMP + "\hub.zip")
+          Invoke-WebRequest -Uri $url -OutFile
           Expand-Archive -Path $env:TEMP + "\hub.zip" -DestinationPath $env:TEMP
           $env:PATH += ";$env:TEMP\hub-windows-amd64-2.14.2"
         else
